@@ -81,6 +81,8 @@ rect { fill: lightblue; }
     our basic US map feature */
     var proj = d3.geoAlbersUsa().scale(1200)
             .translate([width / 2, height / 2]);
+
+    
     /* Creating the geoPath which will draw out our map based
     on input data*/
     var path = d3.geoPath().projection(proj);
@@ -99,7 +101,11 @@ rect { fill: lightblue; }
         var svg = d3.select("#container").append("svg")
                     .attr("preserveAspectRatio", "xMinYMin meet")
                     .attr("viewBox", "0,0,1200,600")
-                    .classed("svg-content", true);
+                    .classed("svg-content", true)
+                    .call(d3.zoom().on("zoom", function(){
+                        svg.attr("transform", d3.event.transform)
+                    }))
+                    .append("g");
                     
         /*This appends a D3 div g to the SVG div and then adds
         US states to the SVG*/
@@ -133,6 +139,8 @@ rect { fill: lightblue; }
                 .style("fill", function(d) {
                     return color(d.HousingAffordabilityIndex);
                 });
+
+        
     };
 
 </script>
