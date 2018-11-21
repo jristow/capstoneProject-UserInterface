@@ -13,13 +13,13 @@
 body {
     background-color: whitesmoke;
 }
-#header {
+/*#header {
     background-color: gray;
     height: 40px;
     border-radius: 5px;
     width: auto;
     text-align: center;
-}
+} */
 h1 {
     font-family: 'Courier New', Courier, monospace;
     font-size: 24pt;
@@ -34,10 +34,9 @@ h1 {
 /* SVG styling */
 svg { background-color: whitesmoke; }
 text { fill: #cbcbcb; font-size: 24px; }
-#states { fill: none; stroke: grey; stroke-width: 0.5px; }
+#states { fill: black; stroke: grey; stroke-width: 0.5px; }
 rect { fill: lightblue; }
-circle { fill: lightcoral;}
-/*circle { fill: lightcoral;}*/
+
 .svg-container {
     display: inline-block;
     position: relative;
@@ -85,8 +84,8 @@ circle { fill: lightcoral;}
 
     queue()
         .defer(d3.json, "us-states.geojson")
-        .defer(d3.tsv, "zips.tsv")
-        .defer(d3.json, "/Data/zipData.json")
+        .defer(d3.tsv, "zips.tsv") 
+        .defer(d3.json, "Data/zipData.json")
         .await(render);
 
     function render(error, states, zips, sales) {
@@ -110,14 +109,18 @@ circle { fill: lightcoral;}
                 .attr("y", function(d) {var p = proj([d.lon,d.lat]); return p ? p[1] : null;})
                 .attr("width",1)
                 .attr("height", 1);
-
+      
+        color = d3.scaleLinear().domain([0,300]).range(["red","yellow"]);
         svg.append("g").attr("id", "zipdots");
         d3.select("#zipdots").selectAll("circle")
             .data(sales)
             .enter().append("circle")
                 .attr("cx", function(d) {var p = proj([d.Longitude,d.Latitude]); return p ? p[0] : null; })
                 .attr("cy", function(d) {var p = proj([d.Longitude,d.Latitude]); return p ? p[1] : null;})
-                .attr("r", 1);
+                .attr("r", 1)
+                .style("fill", function(d) {
+                    return color(d.HousingAffordabilityIndex);
+                });
     };
 
 </script>
