@@ -75,32 +75,41 @@ rect { fill: lightblue; }
     <div id="container" class="svg-container"></div>
     
 <script>
+    /* Defining the width and height of svg */
     var width = 1200, height = 600;
-
+    /* Creating a geoAlbersUsa projection which provides us
+    our basic US map feature */
     var proj = d3.geoAlbersUsa().scale(1200)
             .translate([width / 2, height / 2]);
-
+    /* Creating the geoPath which will draw out our map based
+    on input data*/
     var path = d3.geoPath().projection(proj);
-
+    /* Setting up a Queue which will read in our requied data before
+    executing the render function */
     queue()
         .defer(d3.json, "us-states.geojson")
         .defer(d3.tsv, "zips.tsv") 
         .defer(d3.json, "Data/zipData.json")
         .await(render);
-
+    /* Defining the render function which will take the input data
+    build out the map and then populate the map with points for each
+    zip code */
     function render(error, states, zips, sales) {
+        /*This appends an SVG to the container div*/
         var svg = d3.select("#container").append("svg")
                     .attr("preserveAspectRatio", "xMinYMin meet")
                     .attr("viewBox", "0,0,1200,600")
                     .classed("svg-content", true);
                     
-        
+        /*This appends a D3 div g to the SVG div and then adds
+        US states to the SVG*/
         svg.append("g").attr("id","states");
         d3.select("#states").selectAll("path")
             .data(states.features)
             .enter().append("path")
             .attr("d", path)
-        
+        /* This appends a D3 div g to the SVG and then adds small
+        rectangle features based on zip code coordinates*/
         svg.append("g").attr("id", "zipdots");
         d3.select("#zipdots").selectAll("rect")
             .data(zips)
@@ -109,8 +118,11 @@ rect { fill: lightblue; }
                 .attr("y", function(d) {var p = proj([d.lon,d.lat]); return p ? p[1] : null;})
                 .attr("width",1)
                 .attr("height", 1);
-      
+        /* This creates a color scale which will be used on our Housing
+        Affordability Index to color the zip code points */
         color = d3.scaleLinear().domain([0,300]).range(["red","yellow"]);
+        /* This adds our zip code dots with the color code based on 
+        housing affordability index */
         svg.append("g").attr("id", "zipdots");
         d3.select("#zipdots").selectAll("circle")
             .data(sales)
