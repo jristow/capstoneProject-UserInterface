@@ -1,5 +1,8 @@
 # User Interface for Capstone Project
 
+Note: This repository has been merged with the service layer repository. Latest code updates are at the following 
+url. <br>
+https://github.com/jristow/capstoneProject-ServiceLayer
 This repository contains the User Interface design documentation and design for my capstone project.
 
 The purpose of the project is to create an interactive visualization of housing affordability in America.
